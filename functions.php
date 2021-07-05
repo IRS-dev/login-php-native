@@ -44,8 +44,20 @@ function registrasi($data)
 
         return false;
     }
-
-
+    // email
+    $emailcheck = "SELECT email FROM users WHERE email='$email'";
+    //cek username sudah ada atau belum
+    $result = mysqli_query($conn, $emailcheck);
+    if (mysqli_fetch_assoc($result)) {
+        echo "
+    <script>
+    alert('email is already exsist!')
+    
+    </script>
+    
+    ";
+        return false;
+    }
 
 
     //cek konfirmasi password
@@ -56,8 +68,6 @@ function registrasi($data)
         alert('somethings wrong with your password');
 
         </script>";
-
-
         return false;
     }
     //enkripsi password
@@ -66,7 +76,5 @@ function registrasi($data)
 
     //tambahkan userbaru ke databases
     mysqli_query($conn, "INSERT INTO users VALUE(NULL,'$username','$email','$password')");
-
-
     return mysqli_affected_rows($conn);
 }

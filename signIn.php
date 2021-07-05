@@ -10,10 +10,11 @@ if (isset($_POST["register"])) {
     if (registrasi($_POST) > 0) {
 
         echo "
-                    <script>
+            <script>
                     alert('Hi! New Usser!');
+            </script>";
 
-                    </script>";
+        header("location:login.php");
     } else {
         echo mysqli_error($conn);
     }
