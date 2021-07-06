@@ -1,31 +1,15 @@
 <?php
-require "functions.php";
-if (isset($_POST["login"])) {
-    $username = $_POST["username"];
-    $password = $_POST["pass"];
-    $email = $_POST["email"];
-
-
-    $resultname = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
-    // check username
-    if (mysqli_num_rows($resultname) === 1) {
-        // check Password
-        $row = mysqli_fetch_assoc($resultname);
-        if (password_verify($password, $row["password"])) {
-            echo "
-			<script>alert('
-			Hi!');
-			</script>";
-        } else {
-            echo "
-			<script>alert('
-			Login Failed!');
-			</script>";
-            header("location: login.php");
-        }
-    }
+session_start();
+if (!isset($_SESSION["login"])) {
+    header("location:login.php");
+    exit;
 }
+require "functions.php";
+$username = $_SESSION["username"];
+$email = $_SESSION["email"];
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -68,15 +52,15 @@ if (isset($_POST["login"])) {
                 </span>
 
                 <span class="login100-form-title p-b-34 p-t-27">
-                    Hi! <?= $row["username"]; ?>
+                    Hi! <?= $username; ?>
                 </span>
 
                 <div class="wrap-input100 validate-input" data-validate="Enter username">
 
-                    <h4 Class="txt1" data-placeholder="&#xf207;">User : <?= $row["username"]; ?></h4>
+                    <h4 Class="txt1" data-placeholder="&#xf207;">User : <?= $username; ?></h4>
                 </div>
                 <div class="wrap-input100 validate-input" data-validate="Enter username">
-                    <h4 class="txt1" data-placeholder="&#xf207;">Email: <?= $row["email"]; ?></h4>
+                    <h4 class="txt1" data-placeholder="&#xf207;">Email: <?= $email; ?></h4>
                 </div>
                 <div class="container-login100-form-btn">
                     <a href="logout.php">

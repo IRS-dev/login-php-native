@@ -1,26 +1,17 @@
 <?php
 require_once 'functions.php';
-
-
-
 if (isset($_POST["register"])) {
     $data = $_POST;
-
-
     if (registrasi($_POST) > 0) {
-
         echo "
             <script>
                     alert('Hi! New Usser!');
             </script>";
-
         header("location:login.php");
     } else {
         echo mysqli_error($conn);
     }
 }
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -84,7 +75,7 @@ if (isset($_POST["register"])) {
                     </div>
                     <!-- password 2 -->
                     <div class="wrap-input100 validate-input" data-validate="Enter password">
-                        <input class="input100" type="password" name="pass2" placeholder="Comfirmation your password">
+                        <input class="input100" type="password" name="pass2" placeholder="confirm your password">
                         <span class="focus-input100" data-placeholder="&#xf191;"></span>
                     </div>
 

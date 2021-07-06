@@ -1,5 +1,45 @@
 <?php
+session_start();
 require "functions.php";
+// check cookie
+if (isset($_COOKIE['id']) && ($_COOKIE['key'])) {
+	$id = $_COOKIE['id'];
+	$key = $_COOKIE['key'];
+	$result = mysqli_query($conn, "SELECT * FROM users WHERE id = $id");
+	$row = mysqli_fetch_assoc($result);
+	if ($key === hash('crc32c', $row['username'])) {
+		$_SESSION['login'] = true;
+		$_SESSION["username"] = $row["username"];
+		$_SESSION["email"] = $row["email"];
+	}
+}
+if (isset($_SESSION["login"])) {
+	header("location: index.php");
+}
+if (isset($_POST["login"])) {
+	$username = $_POST["username"];
+	$password = $_POST["pass"];
+	$email = $_POST["email"];
+	$resultname = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
+	// check username
+	if (mysqli_num_rows($resultname) === 1) {
+		// check Password
+		$row = mysqli_fetch_assoc($resultname);
+		if (password_verify($password, $row["password"])) {
+			// set session
+			$_SESSION["login"] = true;
+			$_SESSION["username"] = $row["username"];
+			$_SESSION["email"] = $row["email"];
+			if (isset($_POST['remember'])) {
+				setcookie('id', $row['id'], time() + 3600);
+				setcookie('key', hash('crc32c', $row["username"]), time() + 3600);
+			}
+			header("location: index.php");
+			exit;
+		}
+	}
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,7 +77,7 @@ require "functions.php";
 	<div class="limiter">
 		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
 			<div class="wrap-login100">
-				<form class="login100-form validate-form" action="index.php" method="post">
+				<form class="login100-form validate-form" action=" " method="post">
 					<span class="login100-form-logo">
 						<i class="zmdi zmdi-landscape"></i>
 					</span>
@@ -61,7 +101,7 @@ require "functions.php";
 					</div>
 
 					<div class="contact100-form-checkbox">
-						<input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
+						<input class="input-checkbox100" id="ckb1" type="checkbox" name="remember">
 						<label class="label-checkbox100" for="ckb1" name="remember">
 							Remember me
 						</label>
